@@ -50,7 +50,7 @@ app.get("/api/itemsbyname/:name?", async (req, res) => {
   try {
     var { name } = req.params;
     name = name ?? "";
-    const itemsByName = await getOrSetCache(`ìtemsbyname:${name}`, async () => {
+    const itemsByName = await getOrSetCache(`itemsbyname:${name}`, async () => {
       name = '%' + name + '%';
       const getItemsByName = await pool.query("SELECT * FROM items WHERE LOWER ( name ) LIKE $1", [name]);
       return getItemsByName;
