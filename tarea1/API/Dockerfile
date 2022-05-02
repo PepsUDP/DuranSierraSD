@@ -8,7 +8,9 @@ FROM python:3.7.13-alpine3.14
 
 COPY . .
 
+RUN pip install psycopg2-binary
 RUN pip install --no-cache-dir -r requirements-prod.txt
+
 
 EXPOSE 5000
 
