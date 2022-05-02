@@ -16,39 +16,40 @@ class AppService:
         self.paramsJSON = json.dumps(self.params)
 
     def get_item(self, request_item):
-        connection = 0
-        #return json.dumps({'Try': "wopsie"});
-        try:
-            #return json.dumps({'Try': "dentro"});
-            connection = psycopg2.connect(user="postgres",
-                                    password="marihuana",
-                                    host="127.0.0.1",
-                                    port="5432",
-                                    database="tiendita")
-            cursor = connection.cursor()
-            return json.dumps({'Try': "conn"});
-            postgreSQL_select_Query = "select * from Items"
+        ####
+        #Consulta Reddis:
+        respuesta  = 0
+        ####
+        #Consulta BD
+        if respuesta == 0:
+            connection = 0
+            #return json.dumps({'Try': "wopsie"});
+            try:
+                #Se cae la conexion :(
+                connection = psycopg2.connect(user="postgres",
+                                        password="marihuana",
+                                        host="127.0.0.1",
+                                        port="6543",
+                                        database="tiendita")
+                cursor = connection.cursor()
+                #return json.dumps({'Try': "conn"});
 
-            cursor.execute(postgreSQL_select_Query)
-            mobile_records = cursor.fetchall()
+                #str(request_item)
+                postgreSQL_select_Query = "select * from Items"
 
-            return json.dumps({'Try': mobile_records});
+                cursor.execute(postgreSQL_select_Query)
+                mobile_records = cursor.fetchall()
 
-            print("Print each row and it's columns values")
-            for row in mobile_records:
-                print("Name = ", row[1], )
-                print("Price = ", row[2])
-                print("Category  = ", row[3], "\n")
+                return json.dumps({'Try': mobile_records});
 
-        except (Exception, psycopg2.Error) as error:
-            print("Error while fetching data from PostgreSQL", error)
-
-        finally:
-            # closing database connection.
-            if connection:
-                cursor.close()
-                connection.close()
-                print("PostgreSQL connection is closed")
+            except (Exception, psycopg2.Error) as error:
+                #return json.dumps({"Error while fetching data from PostgreSQL", str(error)});
+                return
+            finally:
+                # closing database connection.
+                if connection:
+                    cursor.close()
+                    connection.close()
 
         return json.dumps({'query_item': request_item});
-  
+    
