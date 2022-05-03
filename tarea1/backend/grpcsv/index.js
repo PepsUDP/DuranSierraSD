@@ -32,12 +32,11 @@ const itemProto = grpc.loadPackageDefinition(packageDefinition);
 
 const server = () => {
   const server = new grpc.Server();
-
-  server.addService(itemProto.Search.service, {
+  server.addService(itemProto.ItemService.service, {
     getItem: (_, callback) => {
+      console.log("server query: ", _);
       const itemName = _.request.name;
       const item = items.item_list.filter((obj) => obj.name.includes(itemName));
-
       callback(null, { items: item});
     }
   });
@@ -54,8 +53,6 @@ server();
 
 app.use(cors());
 app.use(express.json());
-
-
 
 
 app.get("/", (req, res) => {

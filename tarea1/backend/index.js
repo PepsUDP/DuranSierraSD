@@ -3,13 +3,19 @@ const pool = require("./db");
 const cors = require('cors');
 const redis = require('redis');
 const connectRedis =require('connect-redis');
+
+// const grpc = require("@grpc/grpc-js");
+// const protoLoader = require("@grpc/proto-loader");
+
+// const PROTO_PATH = "./example.proto";
+
 const app = express();
 
 const port = process.env.BACKEND_PORT;
 
-//const grpc = require("./grpc_client");
-const server = require("./grpc_server");
-server.server();
+const grpc = require("./grpc_client");
+
+
 
 app.use(cors());
 app.use(express.json());
@@ -21,23 +27,12 @@ const redisClient = redis.createClient({
   port: 6379
 });
 
-// redisClient.on("error", function(error) {
-//   console.error(error);
-// });
-
-// app.use(session({
-//   store: new RedisStore({ client: redisClient }),
-//   secret: 'mysecret',
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {
-//     maxAge: 1000
-//   }
-// }))
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+/*
 
 app.get("/api/items", async (req, res) => {
   try {
@@ -51,10 +46,17 @@ app.get("/api/items", async (req, res) => {
   }
 });
 
+*/
+
+// Grpc
 // http://localhost:3030/items/men?
+
+
 app.get("/items/:item?", async (req, res) => {
   var { item } = req.params;
+  console.log("query: ", item);
   if (item) {
+    console.log("query al sv: ", item);
     grpc.GetItem({name: item}, (error, items) => {
         if (error){
             console.log(error);
@@ -64,36 +66,8 @@ app.get("/items/:item?", async (req, res) => {
   }
 });
 
-// Esto hay que borrarlo cuando funcione el otro
-// http://localhost:3030/api/itemsbyname/men?
-app.get("/api/itemsbyname/:name?", async (req, res) => {
-  try {
-    var { name } = req.params;
-    name = name ?? "";
-    const itemsByName = await getOrSetCache(`itemsbyname:${name}`, async () => {
-      name = '%' + name + '%';
-      const getItemsByName = await pool.query("SELECT * FROM items WHERE LOWER ( name ) LIKE $1", [name]);
-      return getItemsByName;
-    });
-    res.json(itemsByName.rows);
-    // redisClient.get(`itemsbyname:${name}`, async (error, items) => {
-    //   if (error) console.error(error);
-    //   if (items != null) {
-    //     console.log("itemsbyname from redis")
-    //     return res.json(JSON.parse(items));
-    //   } else {
-    //     console.log("itemsbyname from db")
-    //     const p = name;
-    //     name = '%' + name + '%';
-    //     const getItemsByName = await pool.query("SELECT * FROM items WHERE LOWER ( name ) LIKE $1", [name]);
-    //     redisClient.setex(`itemsbyname:${p}`, 10, JSON.stringify(getItemsByName));
-    //     res.json(getItemsByName.rows);
-    //   }
-    // });
-  } catch (error) {
-    console.log(error);
-  }
-});
+
+
 
 function getOrSetCache(key, callback) {
   return new Promise((resolve, reject) => {
