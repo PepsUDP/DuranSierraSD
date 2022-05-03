@@ -12,7 +12,7 @@ const options = {
 };
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
-const ItemService = grpc.loadPackageDefinition(packageDefinition).ItemService;
-const client = new ItemService("localhost:50051", grpc.credentials.createInsecure());
+const Search = grpc.loadPackageDefinition(packageDefinition).Search;
+const client = new Search("localhost:50051", grpc.credentials.createInsecure());
 
 module.exports = client;

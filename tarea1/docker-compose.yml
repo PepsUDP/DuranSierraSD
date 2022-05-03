@@ -68,10 +68,8 @@ services:
       - REDIS_HOST=caching
     volumes:
       - ./backend/grpcsv/index.js:/home/node/index.js
-      - ./backend/grpcsv/grpc_server.js:/home/node/grpc_server.js
       - ./backend/grpcsv/example.proto:/home/node/example.proto
       - ./backend/grpcsv/data.json:/home/node/data.json
-      - ./backend/grpcsv/grpc_client:/home/node/grpc_client
     ports:
       - "5000:5000"
   frontend:

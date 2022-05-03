@@ -21,7 +21,7 @@ const server = () => {
   //Aqui va la query a la BD
   //Falta hacerla sincrona
   //Leyendo el archivo, sirve
-  server.addService(itemProto.ItemService.service, {
+  server.addService(itemProto.Search.service, {
     getItem: (_, callback) => {
       const itemName = _.request.name;
       //const item = items.item_list.filter((obj) => obj.name.includes(itemName));

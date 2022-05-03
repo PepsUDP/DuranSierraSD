@@ -7,7 +7,7 @@ const app = express();
 
 const port = process.env.BACKEND_PORT;
 
-const grpc = require("./grpc_client");
+//const grpc = require("./grpc_client");
 const server = require("./grpc_server");
 server.server();
 

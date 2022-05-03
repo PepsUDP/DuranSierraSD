@@ -4,16 +4,18 @@ message Item {
     int32 id = 1;
     string name = 2;
     int32 value = 3;
+    string category = 4;
+    int32 count = 5;
 }
 
-message Response {
+message Results {
     repeated Item items = 1;
 }
 
-message GetItemsRequest {
-    string name = 1;
+message Request {
+    string request = 1;
 }
 
-service ItemService {
-    rpc GetItem(GetItemsRequest) returns (Response) {}
+service Search {
+    rpc GetItem(Request) returns (Results) {}
 }
