@@ -44,6 +44,9 @@ services:
       - REDIS_HOST=caching
     volumes:
       - ./backend/index.js:/home/node/index.js
+      - ./backend/grpc_server.js:/home/node/grpc_server.js
+      - ./backend/example.proto:/home/node/example.proto
+      - ./backend/data.json:/home/node/data.json
     ports:
       - "$BACKEND_PORT:$BACKEND_PORT"
   frontend:

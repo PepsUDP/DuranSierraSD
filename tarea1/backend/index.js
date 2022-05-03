@@ -4,7 +4,12 @@ const cors = require('cors');
 const redis = require('redis');
 const connectRedis =require('connect-redis');
 const app = express();
+
 const port = process.env.BACKEND_PORT;
+
+const grpc = require("./grpc_client");
+const server = require("./grpc_server");
+server.server();
 
 app.use(cors());
 app.use(express.json());
@@ -46,6 +51,21 @@ app.get("/api/items", async (req, res) => {
   }
 });
 
+// http://localhost:3030/items/men?
+app.get("/items/:item?", async (req, res) => {
+  var { item } = req.params;
+  if (item) {
+    grpc.GetItem({name: item}, (error, items) => {
+        if (error){
+            console.log(error);
+            res.json({});
+        } res.json(items);
+    })
+  }
+});
+
+// Esto hay que borrarlo cuando funcione el otro
+// http://localhost:3030/api/itemsbyname/men?
 app.get("/api/itemsbyname/:name?", async (req, res) => {
   try {
     var { name } = req.params;
