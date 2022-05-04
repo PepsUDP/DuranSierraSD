@@ -73,7 +73,7 @@ services:
       - ./backend/grpcsv/grpc_server.js:/home/node/grpc_server.js
     ports:
       - "5000:5000"
-      - "50051:50051"
+      - "4500:4500"
   frontend:
     depends_on:
       - database

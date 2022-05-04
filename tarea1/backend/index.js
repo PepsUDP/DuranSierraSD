@@ -4,7 +4,6 @@ const cors = require('cors');
 const redis = require('redis');
 const connectRedis =require('connect-redis');
 
-// const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const PROTO_PATH = "./example.proto";
 
@@ -15,7 +14,6 @@ const port = process.env.BACKEND_PORT;
 const grpc = require("@grpc/grpc-js");
 const grpcc = require("./grpc_client");
 
-
 const options = {
   keepCase: true,
   longs: String,
@@ -23,8 +21,6 @@ const options = {
   defaults: true,
   oneofs: true,
 };
-
-
 
 app.use(cors());
 app.use(express.json());
@@ -36,16 +32,7 @@ const redisClient = redis.createClient({
   port: 6379
 });
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
-const ItemService = grpc.loadPackageDefinition(packageDefinition).ItemService;
 
-// https://www.delftstack.com/es/howto/node.js/nodejs-sleep/
-const displayFunction = () => {
-  const client = new ItemService("0.0.0.0:50051", grpc.credentials.createInsecure());
-  console.log("cliente!", client);
-}
-//function may contain more parameters
-setTimeout(displayFunction, 4000);
 
 
 
@@ -53,7 +40,82 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-/*
+
+// *************
+// Grpc
+//**************
+
+
+// http://localhost:3030/items/1?
+
+app.get("/items/:item?", async (req, res) => {
+  var { item } = req.params;
+  if (item) {
+    console.log("query al sv: ", item);
+    grpcc.GetItem({name: item}, (error, items) => {
+        console.log("query: previa");
+        if (error){
+            console.log(error);
+            res.json({"fallo": "f"});
+            return;
+        } res.json(items);
+        return;
+    // console.log("query: paso");
+    })
+  }
+});
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
+const ItemService = grpc.loadPackageDefinition(packageDefinition).ItemService;
+
+
+// http://localhost:3030/items/1?
+app.get("/test/:item?", async (req, res) => {
+  var { item } = req.params;
+  response = caller(item);
+  res.json(response);
+  return;
+});
+
+function caller(item){
+  var client = new ItemService('0.0.0.0:4500',
+                                       grpc.credentials.createInsecure());
+  client.GetItem({name: item}, function(err, response) {
+    console.log('Greeting: ', response);
+    if (err){
+      console.log(err);
+      response = {"fallo": "f"};
+      return response;
+    }
+  return response;
+  });
+}
+
+// http://localhost:3030/lit/1?
+app.get("/lit/:item?", async (req, res) => {
+  var { item } = req.params;
+  if (item) {
+    var client = new ItemService('0.0.0.0:4500',
+                                       grpc.credentials.createInsecure());
+    console.log("query al sv: ", item);
+    client.GetItem({name: item}, (error, items) => {
+        console.log("query: lit");
+        if (error){
+            console.log(error);
+            res.json({"fallo": "f"});
+            return;
+        } res.json(items);
+        return;
+    // console.log("query: paso");
+    })
+  }
+});
+
+
+
+// ******************
+// Conexion BD y API
+// ******************
 
 app.get("/api/items", async (req, res) => {
   try {
@@ -67,31 +129,23 @@ app.get("/api/items", async (req, res) => {
   }
 });
 
-*/
 
-
-
-// Grpc
-// http://localhost:3030/items/men?
-
-app.get("/items/:item?", async (req, res) => {
-  var { item } = req.params;
-  if (item) {
-    console.log("query al sv: ", item);
-    grpcc.GetItem({name: item}, (error, items) => {
-        console.log("query: previa");
-        if (error){
-            console.log(error);
-            res.json({"fallo": "f"});
-        } res.json(items);
-    console.log("query: paso");
-    })
+// BD
+app.get("/query/:name?", async (req, res) => {
+  try {
+    var { name } = req.params;
+    name = name ?? "";
+    const itemsByName = await getOrSetCache(`itemsbyname:${name}`, async () => {
+      name = '%' + name + '%';
+      const getItemsByName = await pool.query("SELECT * FROM items WHERE LOWER ( name ) LIKE $1", [name]);
+      return getItemsByName;
+    });
+    res.json(itemsByName.rows);
+  } catch (error) {
+    console.log(error);
   }
 });
-
-
-
-
+  
 function getOrSetCache(key, callback) {
   return new Promise((resolve, reject) => {
     redisClient.get(key, async (error, data) => {

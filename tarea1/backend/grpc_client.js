@@ -13,6 +13,6 @@ const options = {
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
 const ItemService = grpc.loadPackageDefinition(packageDefinition).ItemService;
-const client = new ItemService("0.0.0.0:50051", grpc.credentials.createInsecure());
+const client = new ItemService("0.0.0.0:4500", grpc.credentials.createInsecure());
 
 module.exports = client;

@@ -24,10 +24,10 @@ const server = () => {
       callback(null, { items: item});
     }
   });
-  server.bindAsync("0.0.0.0:50051", grpc.ServerCredentials.createInsecure(), (err, port) => {
+  server.bindAsync("localhost:4500", grpc.ServerCredentials.createInsecure(), (err, port) => {
     if (err != null) console.log(err);
     else {
-      console.log("GRPC SERVER RUN AT http://0.0.0.0:50051");
+      console.log("GRPC SERVER RUN AT http://0.0.0.0:4500");
       server.start();
     }
   });
