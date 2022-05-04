@@ -87,6 +87,27 @@ Tabla comparativa entre algoritmo de remoción LRU y LFU (i.e., menos recienteme
 |Política muy utilizada cuando se maneja una escala de potencias de la popularidad de las *queries*|Utiliza un contador probabilístico llamado "contador de Morris" para estimar la frecuencia de acceso a las *queries*|
 |La versión utilizada por Redis no es exacta. Es decir, al ser consultada por la llave más "lejanamente" utilizada, prueba una pequeña muestra y elimina la mejor de ese grupo|Tiene parámetros ajustables para determinar que tan rápido deja de ser considerada frecuente una *query*|
 
+Breve ejemplo de *allkeys*-LRU y *allkeys*-LFU en esta implementación:
+
+En ambos casos, se consulta inicialmente por "a" múltiples veces:
+
+![afromredis](https://user-images.githubusercontent.com/70279893/166616730-08e40499-cf49-43eb-a90b-b4dcde4ef906.png)
+
+Para el caso de *allkeys*-LRU:
+
+![allkeys-LRU](https://user-images.githubusercontent.com/70279893/166617309-7a6a1997-55ca-4a78-8163-e6c19228f3a5.png)
+
+Una vez se alcanza la memoria máxima (1 megabyte en este caso), se remueve el par *key*-*value* para la *query* que pregunta por "a", a pesar de haber sido consultada múltiples veces:
+
+![BandNAredis](https://user-images.githubusercontent.com/70279893/166617404-1358bcda-b22c-4a45-ac78-dee19294ba6b.png)
+
+Para el caso de *allkeys*-LFU:
+
+![allkeys-LFU](https://user-images.githubusercontent.com/70279893/166617549-6371d74b-09a1-45a6-b337-c619f7fb7b0f.png)
+
+A diferencia del caso anterior, cuando se llena la memoria, el par *key*-*value* eliminado corresponde a la *query* que pregunta por "b", ya que la consulta relacionada a "a" tiene un factor de frecuencia mayor:
+
+![AandBredis](https://user-images.githubusercontent.com/70279893/166617724-6533c2ce-bdb2-45bf-b5e3-2e8425ecc126.png)
 
 BIBLIOGRAFÍA:
 
