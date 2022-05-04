@@ -8,7 +8,7 @@ const InputItems = () => {
     const onSubmitForm = async(e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3030/api/itemsbyname/" +  item.toLowerCase(), {
+            const response = await fetch("http://localhost:3030/query/" +  item.toLowerCase(), {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
