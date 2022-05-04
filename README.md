@@ -72,6 +72,25 @@ Finalmente, con el siguiente comando se pueden obtener los valores guardados par
   GET [nombre de alguna llave]
 ```
 
+gRPC:
+
+Existen 3 intentos de conexion gRPC Cliente-Servidor en el codigo, sin embargo, todas fallan por Timeout (el Cliente no encuentra al Servidor). En teoria, de lograrse la conexion, la respuesta a la consulta deberia ser el item del archivo data.json que contiene el valor consultado (1 => "id": 1, "name": "Item 1", "value": 5).
+Las rutas de prueba son las siguientes:
+
+```
+  http://localhost:3030/items/1?
+  http://localhost:3030/test/1?
+  http://localhost:3030/lit/1?
+```
+
+Frontend:
+
+El front es accesible en la siguiente direccion. Este sirve para facilitar las consultas realizadas al proyecto, guardando los resultados en cache de ser necesario.
+
+```
+  http://localhost:3000/api/items
+```
+
 Configuracion Redis:
 
 La configuracion del container de Redis se realiza en el archivo docker-compose mediante la siguiente linea, la cual permite ajustar el tamaño de la memoria asignada y el metodo de remocion de las llaves.
