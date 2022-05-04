@@ -72,6 +72,8 @@ Finalmente, con el siguiente comando se pueden obtener los valores guardados par
   GET [nombre de alguna llave]
 ```
 
+Configuracion Redis
+
 
 CODIGOS UTILIZADOS:
 
