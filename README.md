@@ -79,6 +79,11 @@ La configuracion del container de Redis se realiza en el archivo docker-compose 
 ```
 command: redis-server --bind caching --maxmemory 1mb --maxmemory-policy allkeys-lru
 ```
+Tabla comparativa entre algoritmo de remoción LRU y LFU (i.e., menos recientemente utilizado y menos frecuentemente utilidazo, respectivamente).
+
+| LRU | LFU |
+| ----|----:|
+|Test |test1|
 
 
 CODIGOS UTILIZADOS:
