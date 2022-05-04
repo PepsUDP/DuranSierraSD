@@ -72,7 +72,13 @@ Finalmente, con el siguiente comando se pueden obtener los valores guardados par
   GET [nombre de alguna llave]
 ```
 
-Configuracion Redis
+Configuracion Redis:
+
+La configuracion del container de Redis se realiza en el archivo docker-compose mediante la siguiente linea, la cual permite ajustar el tamaño de la memoria asignada y el metodo de remocion de las llaves.
+
+```
+command: redis-server --bind caching --maxmemory 1mb --maxmemory-policy allkeys-lru
+```
 
 
 CODIGOS UTILIZADOS:
