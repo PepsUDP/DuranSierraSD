@@ -82,9 +82,10 @@ command: redis-server --bind caching --maxmemory 1mb --maxmemory-policy allkeys-
 Tabla comparativa entre algoritmo de remoción LRU y LFU (i.e., menos recientemente utilizado y menos frecuentemente utilidazo, respectivamente).
 
 | LRU | LFU |
-|-----|:---:|
+|:---:|:---:|
 |Mantiene las *keys* utilizadas más recientemente|Mantiene las *keys* frecuentemente usadas|
 |Política muy utilizada cuando se maneja una escala de potencias de la popularidad de las *queries*|Utiliza un contador probabilístico llamado "contador de Morris" para estimar la frecuencia de acceso a las *queries*|
+|La versión utilizada por Redis no es exacta. Es decir, al ser consultada por la llave más "lejanamente" utilizada, prueba una pequeña muestra y elimina la mejor de ese grupo|Tiene parámetros ajustables para determinar que tan rápido deja de ser considerada frecuente una *query*|
 
 
 BIBLIOGRAFÍA:
