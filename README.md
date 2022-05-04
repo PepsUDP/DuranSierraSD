@@ -83,7 +83,7 @@ Tabla comparativa entre algoritmo de remoción LRU y LFU (i.e., menos recienteme
 
 | LRU | LFU |
 | ----|:---:|
-|Test |testlargo123|
+|Mantiene las *keys* utilizadas más recientemente|Mantiene las *keys* frecuentemente usadas|
 
 
 CODIGOS UTILIZADOS:
