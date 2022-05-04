@@ -69,7 +69,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
 const ItemService = grpc.loadPackageDefinition(packageDefinition).ItemService;
 
 
-// http://localhost:3030/items/1?
+// http://localhost:3030/test/1?
 app.get("/test/:item?", async (req, res) => {
   var { item } = req.params;
   response = caller(item);
