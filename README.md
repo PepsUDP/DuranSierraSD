@@ -81,8 +81,8 @@ command: redis-server --bind caching --maxmemory 1mb --maxmemory-policy allkeys-
 ```
 Tabla comparativa entre algoritmo de remoción LRU y LFU (i.e., menos recientemente utilizado y menos frecuentemente utilidazo, respectivamente).
 
-| LRU |:LFU:|
-| ----|----:|
+| LRU | LFU |
+| ----|:---:|
 |Test |testlargo123|
 
 
