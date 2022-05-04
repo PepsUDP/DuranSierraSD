@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  caching:
+    image: bitnami/redis:6.0.16
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: redis-server --bind caching --maxmemory 1mb --maxmemory-policy allkeys-lru
+    volumes:
+      - './redis_data:/bitnami/redis/data'
+    ports:
+      - "6379:6379"
+  database:
+    restart: always
+    image: bitnami/postgresql:11
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
+    volumes:
+      - ./db/data/postgres:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+  backend:
+    depends_on:
+      - caching
+      - database
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_HOST=database
+      - PORT=$BACKEND_PORT
+      - REDIS_HOST=caching
+    volumes:
+      - ./backend/index.js:/home/node/index.js
+    ports:
+      - "$BACKEND_PORT:$BACKEND_PORT"
+  frontend:
+    depends_on:
+      - database
+      - backend
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_BACKEND_PORT=$BACKEND_PORT
+      - REACT_APP_BACKEND_HOST=backend
+      - PORT=$FRONTEND_PORT
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    ports:
+      - "$FRONTEND_PORT:$FRONTEND_PORT"
+
+volumes:
+  redis_data:
+    driver: local
