@@ -84,8 +84,14 @@ Tabla comparativa entre algoritmo de remoción LRU y LFU (i.e., menos recienteme
 | LRU | LFU |
 |-----|:---:|
 |Mantiene las *keys* utilizadas más recientemente|Mantiene las *keys* frecuentemente usadas|
-|Test1|Test2|
+|Política muy utilizada cuando se maneja una escala de potencias de la popularidad de las *queries*|Utiliza un contador probabilístico llamado "contador de Morris" para estimar la frecuencia de acceso a las *queries*|
 
+
+BIBLIOGRAFÍA:
+
+Políticas de remoción de Redis:
+
+https://redis.io/docs/manual/eviction/
 
 CODIGOS UTILIZADOS:
 
