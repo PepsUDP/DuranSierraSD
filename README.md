@@ -90,3 +90,7 @@ https://github.com/Oscurt/sd_202201/tree/main/grpc_example/node
 Funcion de espera para conexion a servidor gRPC:
 
 https://www.delftstack.com/es/howto/node.js/nodejs-sleep/
+
+Función para guardar la respuesta de una consulta en redis:
+
+https://www.youtube.com/watch?v=jgpVdJB2sKQ
