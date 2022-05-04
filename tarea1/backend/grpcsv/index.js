@@ -18,6 +18,7 @@ const items = require("./data.json");
 
 const port = 5000;
 
+/*
 
 const options = {
   keepCase: true,
@@ -50,6 +51,12 @@ const server = () => {
 };
 
 server();
+
+*/
+
+
+const server = require("./grpc_server");
+server.server();
 
 app.use(cors());
 app.use(express.json());

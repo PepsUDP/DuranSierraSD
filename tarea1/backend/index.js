@@ -5,15 +5,24 @@ const redis = require('redis');
 const connectRedis =require('connect-redis');
 
 // const grpc = require("@grpc/grpc-js");
-// const protoLoader = require("@grpc/proto-loader");
-
-// const PROTO_PATH = "./example.proto";
+const protoLoader = require("@grpc/proto-loader");
+const PROTO_PATH = "./example.proto";
 
 const app = express();
 
 const port = process.env.BACKEND_PORT;
 
-const grpc = require("./grpc_client");
+const grpc = require("@grpc/grpc-js");
+const grpcc = require("./grpc_client");
+
+
+const options = {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+};
 
 
 
@@ -26,6 +35,18 @@ const redisClient = redis.createClient({
   host: process.env.REDIS_HOST,
   port: 6379
 });
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
+const ItemService = grpc.loadPackageDefinition(packageDefinition).ItemService;
+
+// https://www.delftstack.com/es/howto/node.js/nodejs-sleep/
+const displayFunction = () => {
+  const client = new ItemService("0.0.0.0:50051", grpc.credentials.createInsecure());
+  console.log("cliente!", client);
+}
+//function may contain more parameters
+setTimeout(displayFunction, 4000);
+
 
 
 app.get("/", (req, res) => {
@@ -48,20 +69,22 @@ app.get("/api/items", async (req, res) => {
 
 */
 
+
+
 // Grpc
 // http://localhost:3030/items/men?
 
-
 app.get("/items/:item?", async (req, res) => {
   var { item } = req.params;
-  console.log("query: ", item);
   if (item) {
     console.log("query al sv: ", item);
-    grpc.GetItem({name: item}, (error, items) => {
+    grpcc.GetItem({name: item}, (error, items) => {
+        console.log("query: previa");
         if (error){
             console.log(error);
-            res.json({});
+            res.json({"fallo": "f"});
         } res.json(items);
+    console.log("query: paso");
     })
   }
 });

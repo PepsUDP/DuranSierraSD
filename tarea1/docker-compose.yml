@@ -29,6 +29,7 @@ services:
     depends_on:
       - caching
       - database
+      - grcpsv
     restart: always
     build:
       context: ./backend
@@ -46,7 +47,6 @@ services:
       - ./backend/index.js:/home/node/index.js
       - ./backend/example.proto:/home/node/example.proto
       - ./backend/grpc_client.js:/home/node/grpc_client.js
-      - ./backend/data.json:/home/node/data.json
     ports:
       - "$BACKEND_PORT:$BACKEND_PORT"
   grcpsv:
@@ -70,6 +70,7 @@ services:
       - ./backend/grpcsv/index.js:/home/node/index.js
       - ./backend/grpcsv/example.proto:/home/node/example.proto
       - ./backend/grpcsv/data.json:/home/node/data.json
+      - ./backend/grpcsv/grpc_server.js:/home/node/grpc_server.js
     ports:
       - "5000:5000"
       - "50051:50051"
