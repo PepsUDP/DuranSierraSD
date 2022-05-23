@@ -4,15 +4,26 @@ https://github.com/Oscurt/sd_202201
 
 https://www.sohamkamani.com/nodejs/working-with-kafka/
 
+Explicación y rutas
 
-Producer:
+1) docker-compose up --build
 
-http://localhost:3000/
+2) Rutas:
+	- Para levantar el consumidor: http://localhost:3001/cons
+	- Para levantar el productor y realizar una petición POST / acceso: http://localhost:3000/login -> body raw JSON, formato del input: {"user":<email>, 
+  "pass":<contraseña>}
+	- Para visualizar los usuarios bloqueados: http://localhost:3001/blocked -> respuesta JSON
+	- Para visualizar los intentos de inicio totales en el registro: http://localhost:3001/attempts -> respuesta JSON.
+	
+3) Al realizar un POST, el productor escribe en el tópico el usuario que realiza el intento de inicio de sesión y el timestamp en que este fue realizado.
 
-Login:
+4) El consumidor al activarse consume los mensajes que estén almacenados en el broker, o bien queda a la espera de que se escriba en el tópico al cual 
+   se encuentra suscrito.
 
-http://localhost:3000/login
+5) El consumidor al recibir el email del usuario y el registro de tiempo asociado al intento de inicio, almacena la tupla mencionada en un arreglo que 
+   contiene todos los intentos de inicio de sesión registrados en el sistema (en una situación con una gran cantidad de datos debe irse vaciando). 
+   Para revisar si el usuario ha hecho cinco o más intentos de inicio de sesión en el último minuto, se filtra el arreglo según el correo y se compara 
+   el tiempo entre el último intento con el resto, resultando en un bloqueo al usuario en el caso que corresponda, almacenando el correo asociado en un 
+   arreglo.
 
-Consumer:
-
-http://localhost:3001/
+6) Se visualizan los usuarios bloqueados en la ruta correspondiente.
