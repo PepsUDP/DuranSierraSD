@@ -10,8 +10,7 @@ Explicación y rutas
 
 2) Rutas:
 	- Para levantar el consumidor: http://localhost:3001/cons
-	- Para levantar el productor y realizar una petición POST / acceso: http://localhost:3000/login -> body raw JSON, formato del input: {"user":<email>, 
-  "pass":<contraseña>}
+	- Para levantar el productor y realizar una petición POST / acceso: http://localhost:3000/login -> body raw JSON, formato del input: {"user":<email>, "pass":<contraseña>}
 	- Para visualizar los usuarios bloqueados: http://localhost:3001/blocked -> respuesta JSON
 	- Para visualizar los intentos de inicio totales en el registro: http://localhost:3001/attempts -> respuesta JSON.
 	
