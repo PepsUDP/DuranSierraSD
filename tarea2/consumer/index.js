@@ -31,6 +31,7 @@ const topic = "logs"
 const consumer = kafka.consumer({ groupId: clientId })
 
 usersBlocked = []
+attempts = []
 // Funcion para leer los mensajes del topic
 const consume = async () => {
 	// first, we wait for the client to connect and subscribe to the given topic
@@ -39,15 +40,34 @@ const consume = async () => {
 	await consumer.run({
 		// this function is called every time the consumer gets a new message
 		eachMessage: ({ message }) => {
-			// here, we just log the message to the standard output
+
 			user = message.key
-			attempts = parseInt(message.value)
+			date = parseInt(message.value)
 			console.log(`Usuario: ${user}`)
-			console.log(`Intento: ${attempts}`)
-			if (attempts >= 5) {
+			console.log(`Timestamp: ${date}`)
+
+			datalog = [user.toString(), date]
+			attempts.push(datalog)
+
+			date_acct = date = Date.now();
+
+			tries = 0
+			userAttempts = attempts.filter(attempt => attempt[0] == user)
+			for (i = 0; i < userAttempts.length; i++) {
+				if (userAttempts[i][0] == user) {
+					resta = date_acct - userAttempts[i][1]
+					if (resta < 60000) {
+						tries++
+					}
+				}
+			}
+			console.log('Intentos recientes: ' + tries)
+			console.log('Intentos totales: ' + userAttempts.length)
+
+			if (tries >= 5) {
 				if (!usersBlocked.includes(user.toString())) {
 					usersBlocked.push(user.toString())
-					console.log(user.toString() + " bloqueado")
+					console.log(`Usuario bloqueado: ${user}`)
 				}
 			}
 		},
@@ -57,10 +77,13 @@ const consume = async () => {
 // Lee los mensajes en topic
 app.get("/cons", async (req, res) => {
   consume();
+  res.send("Consuming");
 });
 
 app.get('/blocked', (req, res) => {
 	  res.send(JSON.stringify({ "users-blocked": usersBlocked }));
 });
 
-
+app.get('/attempts', (req, res) => {
+	  res.send(JSON.stringify({ "attempts": attempts }));
+});
