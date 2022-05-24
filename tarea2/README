@@ -1,73 +1,44 @@
-# README
+Explicación y rutas:
 
-Referencias
+1) docker-compose up --build
+
+2) Rutas:
+	- Para levantar el consumidor: http://localhost:3001/cons
+	- Para levantar el productor y realizar una petición POST / acceso: http://localhost:3000/login -> body raw JSON, formato del input: 
+	  {"user":<email>, "pass":<contraseña>}
+	- Para visualizar los usuarios bloqueados: http://localhost:3001/blocked -> respuesta JSON
+	- Para visualizar los intentos de inicio totales en el registro: http://localhost:3001/attempts -> respuesta JSON.
+	
+3) Al realizar un POST, el productor escribe en el tópico el usuario que realiza el intento de inicio de sesión y el timestamp en que este fue realizado.
+
+4) El consumidor al activarse consume los mensajes que estén almacenados en el broker, o bien queda a la espera de que se escriba en el tópico al cual 
+   se encuentra suscrito.
+
+5) El consumidor al recibir el email del usuario y el registro de tiempo asociado al intento de inicio, almacena la tupla mencionada en un arreglo que 
+   contiene todos los intentos de inicio de sesión registrados en el sistema (en una situación con una gran cantidad de datos debe irse vaciando). 
+   Para revisar si el usuario ha hecho cinco o más intentos de inicio de sesión en el último minuto, se filtra el arreglo según el correo y se compara 
+   el tiempo entre el último intento con el resto, resultando en un bloqueo al usuario en el caso que corresponda, almacenando el correo asociado en un 
+   arreglo.
+
+6) Se visualizan los usuarios bloqueados en la ruta correspondiente.
+
+Preguntas:
+
+1.- ¿Por qué Kafka funciona bien en este escenario?
+R: Kafka funciona bien en este escenario gracias a que permite que una gran cantidad de solicitudes de acceso de clientes que probablemente 
+   estén distribuidos, sean registradas/publicadas en un tópico del cual puedan ser leidas y utilizadas por servicios importantes para el 
+   funcionamiento del sistema, como en este caso es impedir la inundación de tráfico por parte de algunos usuarios.
+
+2.- Basado en las tecnolog ́ıas que usted tiene a su disposición (Kafka, backend) ¿Qué haría usted para manejar una gran cantidad de usuarios 
+    al mismo tiempo?
+R: Aprovechar la capacidad distributiva de kafka para escalar horizontalmente añadiendo más brokers al cluster de Kafka, para de esta manera 
+   poder responder a más solicitudes. Esto tiene el beneficio adicional de mejorar la tolerancia a fallos al distribuir la cantidad de 
+   posibles puntos de fallos, minimizando la gravedad de que se caiga uno de estos nodos.
+
+Bibliografía:
 
 https://github.com/kriscfoster/node-kafka-producer-consumer
 
 https://github.com/Oscurt/sd_202201
 
 https://www.sohamkamani.com/nodejs/working-with-kafka/
-
-Explicación y rutas
-<<<<<<< HEAD
-
-1) docker-compose up --build
-
-2) Rutas:
-	- Para levantar el consumidor: http://localhost:3001/cons
-	- Para levantar el productor y realizar una petición POST / acceso: http://localhost:3000/login -> body raw JSON, formato del input: 
-	  {"user":<email>, "pass":<contraseña>}
-	- Para visualizar los usuarios bloqueados: http://localhost:3001/blocked -> respuesta JSON
-	- Para visualizar los intentos de inicio totales en el registro: http://localhost:3001/attempts -> respuesta JSON.
-	
-3) Al realizar un POST, el productor escribe en el tópico el usuario que realiza el intento de inicio de sesión y el timestamp en que este fue realizado.
-
-4) El consumidor al activarse consume los mensajes que estén almacenados en el broker, o bien queda a la espera de que se escriba en el tópico al cual 
-   se encuentra suscrito.
-
-5) El consumidor al recibir el email del usuario y el registro de tiempo asociado al intento de inicio, almacena la tupla mencionada en un arreglo que 
-   contiene todos los intentos de inicio de sesión registrados en el sistema (en una situación con una gran cantidad de datos debe irse vaciando). 
-   Para revisar si el usuario ha hecho cinco o más intentos de inicio de sesión en el último minuto, se filtra el arreglo según el correo y se compara 
-   el tiempo entre el último intento con el resto, resultando en un bloqueo al usuario en el caso que corresponda, almacenando el correo asociado en un 
-   arreglo.
-
-6) Se visualizan los usuarios bloqueados en la ruta correspondiente.
-
-
-Preguntas:
-
-1.- Kafka funciona bien en este escenario/tipo de aplicacion ya que permite
-
-
-=======
-
-1) docker-compose up --build
-
-2) Rutas:
-	- Para levantar el consumidor: http://localhost:3001/cons
-	- Para levantar el productor y realizar una petición POST / acceso: http://localhost:3000/login -> body raw JSON, formato del input: 
-	  {"user":<email>, "pass":<contraseña>}
-	- Para visualizar los usuarios bloqueados: http://localhost:3001/blocked -> respuesta JSON
-	- Para visualizar los intentos de inicio totales en el registro: http://localhost:3001/attempts -> respuesta JSON.
-	
-3) Al realizar un POST, el productor escribe en el tópico el usuario que realiza el intento de inicio de sesión y el timestamp en que este fue realizado.
-
-4) El consumidor al activarse consume los mensajes que estén almacenados en el broker, o bien queda a la espera de que se escriba en el tópico al cual 
-   se encuentra suscrito.
-
-5) El consumidor al recibir el email del usuario y el registro de tiempo asociado al intento de inicio, almacena la tupla mencionada en un arreglo que 
-   contiene todos los intentos de inicio de sesión registrados en el sistema (en una situación con una gran cantidad de datos debe irse vaciando). 
-   Para revisar si el usuario ha hecho cinco o más intentos de inicio de sesión en el último minuto, se filtra el arreglo según el correo y se compara 
-   el tiempo entre el último intento con el resto, resultando en un bloqueo al usuario en el caso que corresponda, almacenando el correo asociado en un 
-   arreglo.
-
-6) Se visualizan los usuarios bloqueados en la ruta correspondiente.
-
-
-Preguntas:
-
-1.- Kafka funciona bien en este escenario/tipo de aplicacion ya que permite
-
-
->>>>>>> af26ad215f2058eb9a5352f269a2011d2b275b2e
-2.- Para logar que una aplicacion de este tipo maneje un gran volumen de usuarios de forma simultanea, se deberia
