@@ -27,3 +27,11 @@ Explicación y rutas
    arreglo.
 
 6) Se visualizan los usuarios bloqueados en la ruta correspondiente.
+
+
+Preguntas:
+
+1.- Kafka funciona bien en este escenario/tipo de aplicacion ya que permite
+
+
+2.- Para logar que una aplicacion de este tipo maneje un gran volumen de usuarios de forma simultanea, se deberia
